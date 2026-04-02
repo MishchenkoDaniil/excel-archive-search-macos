@@ -77,6 +77,42 @@ def configure_page() -> None:
                 color: var(--muted);
                 font-size: 0.92rem;
             }
+            .metric-card {
+                background: linear-gradient(180deg, #ffffff 0%, #f7fbfa 100%);
+                border: 1px solid rgba(15, 118, 110, 0.12);
+                border-radius: 16px;
+                padding: 0.9rem 1rem 1rem 1rem;
+                box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+                min-height: 7.2rem;
+            }
+            .metric-card.is-warn {
+                background: linear-gradient(180deg, #fff7ed 0%, #fffbf5 100%);
+                border-color: rgba(154, 52, 18, 0.18);
+            }
+            .metric-label {
+                color: #334155;
+                font-size: 0.9rem;
+                font-weight: 800;
+                letter-spacing: 0.01em;
+                line-height: 1.3;
+                margin-bottom: 0.75rem;
+            }
+            .metric-value {
+                color: #0b1726;
+                font-size: 2rem;
+                font-weight: 900;
+                line-height: 1;
+                letter-spacing: -0.02em;
+            }
+            .stats-banner {
+                margin-top: 0.9rem;
+                background: linear-gradient(90deg, rgba(8, 54, 60, 0.96) 0%, rgba(11, 82, 91, 0.96) 100%);
+                color: #ffffff;
+                border-radius: 14px;
+                padding: 0.85rem 1rem;
+                font-weight: 700;
+                box-shadow: 0 12px 28px rgba(8, 54, 60, 0.16);
+            }
             .stTextInput label,
             .stSelectbox label,
             .stRadio label,
@@ -286,20 +322,40 @@ def render_metrics() -> None:
     )
     db_stats = st.session_state.get("db_stats", get_db_stats())
 
-    metric_columns = st.columns(6)
-    metric_columns[0].metric("Знайдено файлів", last_run["files_found"])
-    metric_columns[1].metric("Проіндексовано", last_run["files_indexed"])
-    metric_columns[2].metric("Пропущено", last_run["files_skipped"])
-    metric_columns[3].metric("Видалено з БД", last_run["files_deleted"])
-    metric_columns[4].metric("Нових комірок", last_run["cells_added"])
-    metric_columns[5].metric("Помилок", last_run["errors"])
+    metric_items = [
+        ("Знайдено файлів", last_run["files_found"], ""),
+        ("Проіндексовано", last_run["files_indexed"], ""),
+        ("Пропущено", last_run["files_skipped"], ""),
+        ("Видалено з БД", last_run["files_deleted"], ""),
+        ("Нових комірок", last_run["cells_added"], ""),
+        ("Помилок", last_run["errors"], "is-warn" if last_run["errors"] else ""),
+    ]
 
-    st.caption(
-        "У базі зараз: {files} файлів, {cells} комірок, {errors} записів у журналі помилок".format(
-            files=db_stats["indexed_files"],
-            cells=db_stats["indexed_cells"],
-            errors=db_stats["error_logs"],
+    metric_columns = st.columns(6)
+    for column, (label, value, tone) in zip(metric_columns, metric_items):
+        tone_class = f" {tone}" if tone else ""
+        formatted_value = f"{value:,}".replace(",", " ")
+        column.markdown(
+            f"""
+            <div class="metric-card{tone_class}">
+                <div class="metric-label">{label}</div>
+                <div class="metric-value">{formatted_value}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
+
+    st.markdown(
+        """
+        <div class="stats-banner">
+            У базі зараз: {files} файлів, {cells} комірок, {errors} записів у журналі помилок
+        </div>
+        """.format(
+            files=f"{db_stats['indexed_files']:,}".replace(",", " "),
+            cells=f"{db_stats['indexed_cells']:,}".replace(",", " "),
+            errors=f"{db_stats['error_logs']:,}".replace(",", " "),
+        ),
+        unsafe_allow_html=True,
     )
 
 
