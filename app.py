@@ -60,6 +60,17 @@ def configure_page() -> None:
                 color: var(--ink);
                 font-family: "Avenir Next", "SF Pro Display", "Helvetica Neue", sans-serif;
             }
+            header[data-testid="stHeader"],
+            div[data-testid="stToolbar"],
+            div[data-testid="stDecoration"],
+            div[data-testid="stStatusWidget"],
+            #MainMenu,
+            footer {
+                display: none !important;
+            }
+            .block-container {
+                padding-top: 1.75rem !important;
+            }
             .app-shell {
                 background: var(--panel);
                 border: 1px solid rgba(31, 41, 51, 0.08);
