@@ -25,7 +25,7 @@ from utils import (
 )
 
 APP_TITLE = "Локальний пошук по Excel-архіву"
-DEFAULT_ROOT = Path.home() / "Downloads" / "МСЕК(НАБРАНЕ)"
+DEFAULT_ROOT = Path.home() / "Downloads"
 SEARCH_MODES = {
     "За назвою файлу": "file_name",
     "За вмістом": "content",
