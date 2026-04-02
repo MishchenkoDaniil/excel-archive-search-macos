@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from datetime import date, datetime, time
 from io import BytesIO
-import os
 from pathlib import Path
 import re
 import subprocess
@@ -93,23 +92,42 @@ def choose_folder_in_finder(initial_path: str | Path | None = None) -> str | Non
     if not start_path.exists():
         start_path = Path.home()
 
-    script = """
-    set startPath to system attribute "CODEX_START_PATH"
-    if startPath is not "" then
-        set chosenFolder to choose folder with prompt "Оберіть кореневу папку з Excel-файлами" default location (POSIX file startPath)
-    else
-        set chosenFolder to choose folder with prompt "Оберіть кореневу папку з Excel-файлами"
-    end if
-    POSIX path of chosenFolder
-    """
-    env = os.environ.copy()
-    env["CODEX_START_PATH"] = str(start_path)
     result = subprocess.run(
-        ["osascript", "-e", script],
+        [
+            "osascript",
+            "-e",
+            'on run argv',
+            "-e",
+            'set promptText to "Оберіть кореневу папку з Excel-файлами"',
+            "-e",
+            'if (count of argv) > 0 then',
+            "-e",
+            'set startPath to item 1 of argv',
+            "-e",
+            'try',
+            "-e",
+            'set chosenFolder to choose folder with prompt promptText default location (POSIX file startPath)',
+            "-e",
+            'on error',
+            "-e",
+            'set chosenFolder to choose folder with prompt promptText',
+            "-e",
+            'end try',
+            "-e",
+            'else',
+            "-e",
+            'set chosenFolder to choose folder with prompt promptText',
+            "-e",
+            'end if',
+            "-e",
+            'return POSIX path of chosenFolder',
+            "-e",
+            'end run',
+            str(start_path),
+        ],
         capture_output=True,
         text=True,
         check=False,
-        env=env,
     )
 
     if result.returncode == 0:
@@ -120,6 +138,9 @@ def choose_folder_in_finder(initial_path: str | Path | None = None) -> str | Non
     if "user canceled" in error_text or "-128" in error_text:
         return None
 
+    details = (result.stderr or result.stdout).strip()
+    if details:
+        raise RuntimeError(f"Не вдалося відкрити вибір папки через Finder: {details}")
     raise RuntimeError("Не вдалося відкрити вибір папки через Finder.")
 
 
