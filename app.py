@@ -326,7 +326,7 @@ def render_index_controls() -> None:
     if action_columns[1].button("Оновити індекс", use_container_width=True):
         run_indexing(root_folder, cleanup_deleted=True)
 
-    if action_columns[2].button("Очистити мертві записи", use_container_width=True):
+    if action_columns[2].button("Очистити застарілі записи", use_container_width=True):
         try:
             deleted = ExcelIndexer(DEFAULT_DB_PATH).cleanup_deleted_records(root_folder)
             st.session_state["last_index_stats"] = {
@@ -338,7 +338,7 @@ def render_index_controls() -> None:
                 "errors": 0,
             }
             st.session_state["db_stats"] = get_db_stats()
-            st.success(f"Видалено записів про неіснуючі файли: {deleted}")
+            st.success(f"Прибрано записів про видалені файли: {deleted}")
         except Exception as exc:  # noqa: BLE001
             st.error(str(exc))
 
