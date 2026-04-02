@@ -16,7 +16,12 @@ from database import (
 )
 from indexer import ExcelIndexer
 from search import search_by_content, search_by_file_name, search_combined
-from utils import export_rows_to_excel, open_path_in_finder, reveal_file_in_finder
+from utils import (
+    choose_folder_in_finder,
+    export_rows_to_excel,
+    open_path_in_finder,
+    reveal_file_in_finder,
+)
 
 APP_TITLE = "Локальний пошук по Excel-архіву"
 DEFAULT_ROOT = Path.home() / "Downloads" / "МСЕК(НАБРАНЕ)"
@@ -368,12 +373,25 @@ def render_index_controls() -> None:
     )
 
     default_root = str(DEFAULT_ROOT) if DEFAULT_ROOT.exists() else str(Path.home() / "Downloads")
-    root_folder = st.text_input(
+    st.session_state.setdefault("root_folder", default_root)
+
+    folder_columns = st.columns([5, 1.2])
+    folder_columns[0].text_input(
         "Коренева папка з Excel-файлами",
-        value=st.session_state.get("root_folder", default_root),
-        help="Вкажіть шлях до папки. Приклад: ~/Downloads/МСЕК(НАБРАНЕ)",
+        key="root_folder",
+        help="Вкажіть шлях до папки вручну або натисніть кнопку праворуч, щоб обрати її через Finder.",
     )
-    st.session_state["root_folder"] = root_folder
+    if folder_columns[1].button("Обрати у Finder", use_container_width=True):
+        try:
+            selected_folder = choose_folder_in_finder(st.session_state.get("root_folder"))
+        except Exception as exc:  # noqa: BLE001
+            st.error(str(exc))
+        else:
+            if selected_folder:
+                st.session_state["root_folder"] = selected_folder
+                st.rerun()
+
+    root_folder = st.session_state["root_folder"]
 
     action_columns = st.columns([1, 1, 1, 2])
     if action_columns[0].button("Індексувати", use_container_width=True):

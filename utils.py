@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import date, datetime, time
 from io import BytesIO
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -82,6 +83,44 @@ def open_path_in_finder(target: str | Path) -> None:
 def reveal_file_in_finder(target: str | Path) -> None:
     path = Path(target).expanduser().resolve(strict=False)
     subprocess.run(["open", "-R", str(path)], check=False)
+
+
+def choose_folder_in_finder(initial_path: str | Path | None = None) -> str | None:
+    """Open the native macOS folder picker and return the selected POSIX path."""
+    start_path = Path(initial_path or Path.home()).expanduser().resolve(strict=False)
+    if start_path.exists() and start_path.is_file():
+        start_path = start_path.parent
+    if not start_path.exists():
+        start_path = Path.home()
+
+    script = """
+    set startPath to system attribute "CODEX_START_PATH"
+    if startPath is not "" then
+        set chosenFolder to choose folder with prompt "Оберіть кореневу папку з Excel-файлами" default location (POSIX file startPath)
+    else
+        set chosenFolder to choose folder with prompt "Оберіть кореневу папку з Excel-файлами"
+    end if
+    POSIX path of chosenFolder
+    """
+    env = os.environ.copy()
+    env["CODEX_START_PATH"] = str(start_path)
+    result = subprocess.run(
+        ["osascript", "-e", script],
+        capture_output=True,
+        text=True,
+        check=False,
+        env=env,
+    )
+
+    if result.returncode == 0:
+        selected_path = result.stdout.strip()
+        return selected_path or None
+
+    error_text = (result.stderr or result.stdout).strip().lower()
+    if "user canceled" in error_text or "-128" in error_text:
+        return None
+
+    raise RuntimeError("Не вдалося відкрити вибір папки через Finder.")
 
 
 def export_rows_to_excel(
