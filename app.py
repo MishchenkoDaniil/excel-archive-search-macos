@@ -315,10 +315,9 @@ def run_indexing(root_folder: str, *, cleanup_deleted: bool) -> None:
         last_stats = st.session_state.get("last_index_stats", {})
         counters.caption(
             "Знайдено файлів: {files_found} | Проіндексовано: {files_indexed} | "
-            "Пропущено: {files_skipped} | Додано комірок: {cells_added} | Помилок: {errors}".format(
+            "Додано комірок: {cells_added} | Помилок: {errors}".format(
                 files_found=last_stats.get("files_found", 0),
                 files_indexed=last_stats.get("files_indexed", 0),
-                files_skipped=last_stats.get("files_skipped", 0),
                 cells_added=last_stats.get("cells_added", 0),
                 errors=last_stats.get("errors", 0),
             )
@@ -358,13 +357,12 @@ def render_metrics() -> None:
     metric_items = [
         ("Знайдено файлів", last_run["files_found"], ""),
         ("Проіндексовано", last_run["files_indexed"], ""),
-        ("Пропущено", last_run["files_skipped"], ""),
         ("Видалено з БД", last_run["files_deleted"], ""),
         ("Нових комірок", last_run["cells_added"], ""),
         ("Помилок", last_run["errors"], "is-warn" if last_run["errors"] else ""),
     ]
 
-    metric_columns = st.columns(6)
+    metric_columns = st.columns(len(metric_items))
     for column, (label, value, tone) in zip(metric_columns, metric_items):
         tone_class = f" {tone}" if tone else ""
         formatted_value = f"{value:,}".replace(",", " ")
