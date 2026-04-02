@@ -42,6 +42,9 @@ def configure_page() -> None:
                 --ink: #1f2933;
                 --muted: #5b6875;
                 --accent: #0f766e;
+                --accent-strong: #0b525b;
+                --accent-deep: #08363c;
+                --line: rgba(31, 41, 51, 0.14);
                 --accent-soft: rgba(15, 118, 110, 0.10);
                 --warn: #9a3412;
             }
@@ -73,6 +76,104 @@ def configure_page() -> None:
             .small-note {
                 color: var(--muted);
                 font-size: 0.92rem;
+            }
+            .stTextInput label,
+            .stSelectbox label,
+            .stRadio label,
+            .stDownloadButton label {
+                color: var(--ink) !important;
+                font-weight: 700 !important;
+            }
+            .stTextInput input,
+            .stSelectbox [data-baseweb="select"] > div,
+            .stSelectbox [data-baseweb="select"] input {
+                background: #ffffff !important;
+                color: var(--ink) !important;
+                border: 1px solid var(--line) !important;
+            }
+            .stTextInput input::placeholder,
+            .stSelectbox input::placeholder {
+                color: #6c7a86 !important;
+                opacity: 1 !important;
+            }
+            .stTextInput input:focus,
+            .stSelectbox [data-baseweb="select"] > div:focus-within {
+                border-color: var(--accent) !important;
+                box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.16) !important;
+            }
+            div[role="radiogroup"] {
+                gap: 0.6rem;
+            }
+            div[role="radiogroup"] > label {
+                background: #ffffff;
+                border: 1px solid var(--line);
+                border-radius: 999px;
+                padding: 0.35rem 0.9rem;
+            }
+            div[role="radiogroup"] > label div {
+                color: var(--ink) !important;
+                font-weight: 700 !important;
+            }
+            div[role="radiogroup"] > label:has(input:checked) {
+                background: var(--accent-soft);
+                border-color: rgba(15, 118, 110, 0.38);
+                box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.18);
+            }
+            .stButton > button,
+            .stDownloadButton > button,
+            .stFormSubmitButton > button {
+                min-height: 2.85rem;
+                border-radius: 12px;
+                border: 1px solid rgba(8, 54, 60, 0.22) !important;
+                background: linear-gradient(180deg, var(--accent-strong) 0%, var(--accent-deep) 100%) !important;
+                color: #ffffff !important;
+                font-weight: 800 !important;
+                letter-spacing: 0.01em;
+                box-shadow: 0 10px 24px rgba(8, 54, 60, 0.18);
+                transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+            }
+            .stButton > button *,
+            .stDownloadButton > button *,
+            .stFormSubmitButton > button * {
+                color: #ffffff !important;
+                fill: #ffffff !important;
+            }
+            .stButton > button:hover,
+            .stDownloadButton > button:hover,
+            .stFormSubmitButton > button:hover {
+                background: linear-gradient(180deg, #0e6168 0%, #062c31 100%) !important;
+                border-color: rgba(6, 44, 49, 0.44) !important;
+                box-shadow: 0 14px 30px rgba(8, 54, 60, 0.22);
+                transform: translateY(-1px);
+            }
+            .stButton > button:focus-visible,
+            .stDownloadButton > button:focus-visible,
+            .stFormSubmitButton > button:focus-visible {
+                outline: none !important;
+                box-shadow:
+                    0 0 0 0.24rem rgba(15, 118, 110, 0.22),
+                    0 12px 28px rgba(8, 54, 60, 0.18) !important;
+            }
+            .stButton > button:disabled,
+            .stDownloadButton > button:disabled,
+            .stFormSubmitButton > button:disabled {
+                background: #d4dde3 !important;
+                color: #52606d !important;
+                border-color: rgba(82, 96, 109, 0.18) !important;
+                box-shadow: none !important;
+                transform: none !important;
+                opacity: 1 !important;
+            }
+            .stButton > button:disabled *,
+            .stDownloadButton > button:disabled *,
+            .stFormSubmitButton > button:disabled * {
+                color: #52606d !important;
+                fill: #52606d !important;
+            }
+            .stDataFrame, .stTable {
+                border: 1px solid rgba(31, 41, 51, 0.08);
+                border-radius: 14px;
+                overflow: hidden;
             }
         </style>
         """,
