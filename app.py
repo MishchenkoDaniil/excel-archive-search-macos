@@ -115,6 +115,9 @@ def configure_page() -> None:
                 line-height: 1.5;
                 word-break: break-word;
             }
+            .folder-action-spacer {
+                height: 1.15rem;
+            }
             .metric-card {
                 background: linear-gradient(180deg, #ffffff 0%, #f7fbfa 100%);
                 border: 1px solid rgba(15, 118, 110, 0.12);
@@ -419,6 +422,7 @@ def render_index_controls() -> None:
         """,
         unsafe_allow_html=True,
     )
+    folder_columns[1].markdown('<div class="folder-action-spacer"></div>', unsafe_allow_html=True)
     if folder_columns[1].button("Обрати у Finder", use_container_width=True):
         try:
             selected_folder = choose_folder_in_finder(st.session_state.get("root_folder"))
@@ -429,6 +433,7 @@ def render_index_controls() -> None:
                 st.session_state["root_folder"] = selected_folder
                 st.rerun()
 
+    folder_columns[2].markdown('<div class="folder-action-spacer"></div>', unsafe_allow_html=True)
     if folder_columns[2].button("Відкрити папку", use_container_width=True):
         open_path_in_finder(root_folder)
 
