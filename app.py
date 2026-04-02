@@ -90,10 +90,6 @@ def configure_page() -> None:
                 font-weight: 700;
                 margin-bottom: 0.5rem;
             }
-            .small-note {
-                color: var(--muted);
-                font-size: 0.92rem;
-            }
             .field-note {
                 color: #334155;
                 font-size: 0.92rem;
@@ -439,7 +435,7 @@ def render_index_controls() -> None:
 
     root_folder = st.session_state["root_folder"]
 
-    action_columns = st.columns([1, 1, 1, 2])
+    action_columns = st.columns(3)
     if action_columns[0].button("Індексувати", use_container_width=True):
         run_indexing(root_folder, cleanup_deleted=False)
 
@@ -461,11 +457,6 @@ def render_index_controls() -> None:
             st.success(f"Прибрано записів про видалені файли: {deleted}")
         except Exception as exc:  # noqa: BLE001
             st.error(str(exc))
-
-    action_columns[3].markdown(
-        f'<p class="small-note">SQLite база: <code>{DEFAULT_DB_PATH}</code></p>',
-        unsafe_allow_html=True,
-    )
 
     render_metrics()
     st.markdown("</div>", unsafe_allow_html=True)
