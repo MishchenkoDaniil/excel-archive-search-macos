@@ -24,7 +24,7 @@ from utils import (
     reveal_file_in_finder,
 )
 
-APP_TITLE = "Пошук в Excel-архіві"
+APP_TITLE = "Локальний пошук по Excel-архіву"
 DEFAULT_ROOT = Path.home() / "Downloads" / "МСЕК(НАБРАНЕ)"
 SEARCH_MODES = {
     "За назвою файлу": "file_name",
