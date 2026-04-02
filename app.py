@@ -72,13 +72,13 @@ def configure_page() -> None:
             .block-container {
                 padding-top: 1.75rem !important;
             }
-            .app-shell {
-                background: var(--panel);
+            .section-panel {
+                background: linear-gradient(180deg, rgba(255, 253, 250, 0.96) 0%, rgba(250, 248, 242, 0.96) 100%);
                 border: 1px solid rgba(31, 41, 51, 0.08);
                 border-radius: 18px;
-                padding: 1.25rem 1.25rem 0.75rem 1.25rem;
-                box-shadow: 0 20px 60px rgba(31, 41, 51, 0.06);
-                margin-bottom: 1rem;
+                padding: 1.15rem 1.15rem 0.95rem 1.15rem;
+                box-shadow: 0 18px 42px rgba(31, 41, 51, 0.06);
+                margin: 0.85rem 0 1rem 0;
             }
             .app-caption {
                 color: var(--muted);
@@ -150,22 +150,30 @@ def configure_page() -> None:
                 font-weight: 700;
                 box-shadow: 0 12px 28px rgba(8, 54, 60, 0.16);
             }
+            .stTextInput label,
             .stSelectbox label,
             .stRadio label,
             .stDownloadButton label {
                 color: var(--ink) !important;
                 font-weight: 700 !important;
             }
+            .stTextInput input,
             .stSelectbox [data-baseweb="select"] > div,
             .stSelectbox [data-baseweb="select"] input {
                 background: #ffffff !important;
                 color: var(--ink) !important;
                 border: 1px solid var(--line) !important;
             }
+            .stSelectbox [data-baseweb="select"] * {
+                color: var(--ink) !important;
+                fill: var(--ink) !important;
+            }
+            .stTextInput input::placeholder,
             .stSelectbox input::placeholder {
                 color: #6c7a86 !important;
                 opacity: 1 !important;
             }
+            .stTextInput input:focus,
             .stSelectbox [data-baseweb="select"] > div:focus-within {
                 border-color: var(--accent) !important;
                 box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.16) !important;
@@ -391,7 +399,6 @@ def render_metrics() -> None:
 
 
 def render_index_controls() -> None:
-    st.markdown('<div class="app-shell">', unsafe_allow_html=True)
     st.markdown(f"## {APP_TITLE}")
     st.markdown(
         '<p class="app-caption">Локальний індекс `.xlsx` і `.xlsm` без сервера та без хмари.</p>',
@@ -453,11 +460,10 @@ def render_index_controls() -> None:
             st.error(str(exc))
 
     render_metrics()
-    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def render_search_section() -> None:
-    st.markdown('<div class="app-shell">', unsafe_allow_html=True)
+    st.markdown('<div class="section-panel">', unsafe_allow_html=True)
     st.markdown('<div class="section-title">Пошук</div>', unsafe_allow_html=True)
 
     mode_label = st.radio(
@@ -562,7 +568,7 @@ def render_result_actions(rows: list[dict[str, Any]]) -> None:
 
 
 def render_error_logs() -> None:
-    st.markdown('<div class="app-shell">', unsafe_allow_html=True)
+    st.markdown('<div class="section-panel">', unsafe_allow_html=True)
     st.markdown('<div class="section-title">Журнал помилок індексації</div>', unsafe_allow_html=True)
 
     logs = st.session_state.get("error_logs", get_logs())
