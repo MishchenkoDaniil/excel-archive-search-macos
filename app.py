@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from html import escape
 from pathlib import Path
 from typing import Any
 
@@ -93,6 +94,27 @@ def configure_page() -> None:
                 color: var(--muted);
                 font-size: 0.92rem;
             }
+            .field-note {
+                color: #334155;
+                font-size: 0.92rem;
+                font-weight: 800;
+                margin-bottom: 0.45rem;
+            }
+            .folder-display {
+                background: linear-gradient(180deg, #ffffff 0%, #f7faf9 100%);
+                border: 1px solid rgba(31, 41, 51, 0.10);
+                border-radius: 16px;
+                padding: 0.9rem 1rem;
+                min-height: 3.2rem;
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+            }
+            .folder-path {
+                color: #0f172a;
+                font-family: "SF Mono", "Menlo", "Monaco", monospace;
+                font-size: 0.92rem;
+                line-height: 1.5;
+                word-break: break-word;
+            }
             .metric-card {
                 background: linear-gradient(180deg, #ffffff 0%, #f7fbfa 100%);
                 border: 1px solid rgba(15, 118, 110, 0.12);
@@ -129,26 +151,22 @@ def configure_page() -> None:
                 font-weight: 700;
                 box-shadow: 0 12px 28px rgba(8, 54, 60, 0.16);
             }
-            .stTextInput label,
             .stSelectbox label,
             .stRadio label,
             .stDownloadButton label {
                 color: var(--ink) !important;
                 font-weight: 700 !important;
             }
-            .stTextInput input,
             .stSelectbox [data-baseweb="select"] > div,
             .stSelectbox [data-baseweb="select"] input {
                 background: #ffffff !important;
                 color: var(--ink) !important;
                 border: 1px solid var(--line) !important;
             }
-            .stTextInput input::placeholder,
             .stSelectbox input::placeholder {
                 color: #6c7a86 !important;
                 opacity: 1 !important;
             }
-            .stTextInput input:focus,
             .stSelectbox [data-baseweb="select"] > div:focus-within {
                 border-color: var(--accent) !important;
                 box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.16) !important;
@@ -386,11 +404,20 @@ def render_index_controls() -> None:
     default_root = str(DEFAULT_ROOT) if DEFAULT_ROOT.exists() else str(Path.home() / "Downloads")
     st.session_state.setdefault("root_folder", default_root)
 
-    folder_columns = st.columns([5, 1.2])
-    folder_columns[0].text_input(
-        "Коренева папка з Excel-файлами",
-        key="root_folder",
-        help="Вкажіть шлях до папки вручну або натисніть кнопку праворуч, щоб обрати її через Finder.",
+    root_folder = st.session_state["root_folder"]
+    st.markdown(
+        '<div class="field-note">Коренева папка з Excel-файлами</div>',
+        unsafe_allow_html=True,
+    )
+
+    folder_columns = st.columns([4.5, 1.2, 1.2])
+    folder_columns[0].markdown(
+        f"""
+        <div class="folder-display">
+            <div class="folder-path">{escape(root_folder)}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
     if folder_columns[1].button("Обрати у Finder", use_container_width=True):
         try:
@@ -401,6 +428,9 @@ def render_index_controls() -> None:
             if selected_folder:
                 st.session_state["root_folder"] = selected_folder
                 st.rerun()
+
+    if folder_columns[2].button("Відкрити папку", use_container_width=True):
+        open_path_in_finder(root_folder)
 
     root_folder = st.session_state["root_folder"]
 
