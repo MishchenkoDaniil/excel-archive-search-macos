@@ -409,7 +409,7 @@ def render_index_controls() -> None:
         unsafe_allow_html=True,
     )
 
-    folder_columns = st.columns([4.5, 1.2, 1.2])
+    folder_columns = st.columns([5.4, 1.3])
     folder_columns[0].markdown(
         f"""
         <div class="folder-display">
@@ -428,10 +428,6 @@ def render_index_controls() -> None:
             if selected_folder:
                 st.session_state["root_folder"] = selected_folder
                 st.rerun()
-
-    folder_columns[2].markdown('<div class="folder-action-spacer"></div>', unsafe_allow_html=True)
-    if folder_columns[2].button("Відкрити папку", use_container_width=True):
-        open_path_in_finder(root_folder)
 
     root_folder = st.session_state["root_folder"]
 
